@@ -79,9 +79,8 @@ Todas as mudanças notáveis no sistema da IA Estratégica do Pretense serão do
     - **Compensação de Perda Assimétrica**: O lado em desvantagem recebe multiplicadores de recursos para evitar o colapso total da missão, com limites específicos para RED e Blue.
     - **Variância de Produção Aleatória**: Introdução de fator aleatório cúbico na produção do RED para simular eficácia estratégica variável.
 - **Sistema de Salvamento 2.0**: Migração dos arquivos de save para o subdiretório `Missions/Saves/` e atualização do formato para `2.0.json`.
-- **Comandos Administrativos por Marcadores (F10)**:
-    - `spawn:[template]`: Permite spawnar veículos terrestres e utilitários via marcador no mapa.
-    - `addres:[valor]`: Comando administrativo para gerenciar recursos das zonas em tempo real.
+- **Comandos Administrativos por Marcadores**:
+- 
 - **Logística de Emergência (Strategic AI)**:
     - Notificações de rádio inter-zonas quando uma zona de linha de frente está crítica e sob ameaça imediata.
     - Priorização automática de comboios de suprimento para estas zonas de "emergência".

@@ -1,9 +1,24 @@
-# EPiC-Pretense
-Pretense Changelog only for server EPiC
-
 # Changelog - Melhorias na IA Estratégica
 
 Todas as mudanças notáveis no sistema da IA Estratégica do Pretense serão documentadas neste arquivo.
+
+## [2026-04-17]
+
+### Corrigido
+- **Missões Aéreas Bloqueadas (Anti-Churn)**:
+  - Missões aéreas que ficam bloqueadas no `takeoff` agora entram em cooldown antes de retornar ao pool de recursos, evitando reativação imediata em loop.
+  - Adicionado contador de falhas consecutivas por produto, com cooldown estendido após reincidência (`Config.airMissionBlockedCooldown`, `Config.airMissionBlockedFailureThreshold`, `Config.airMissionBlockedExtendedCooldown`).
+  - A sequência de falhas é limpa quando a missão realmente entra em `inair`, preservando missões saudáveis.
+
+### Melhorado
+- **Performance (logs quentes de jogador/combate)**:
+  - Logs quentes de combate/jogador (`MissionTracker.tallyHit/tallyKill`, `PlayerTracker.kill`, `MenuRegistry` player events) agora podem ser silenciados em produção via `Config.debugPlayerEvents`, preservando XP/Rank e reduzindo I/O em combate intenso.
+- **CAP Defensivo (Cameron)**:
+  - Priorização de CAP defensivo passou a usar score por densidade de contatos e profundidade da frente, em vez de ordenar zonas por menor número de tracks.
+  - Interceptações de defesa aérea agora ficam limitadas a zonas amigas dentro de uma faixa configurável da frente (`Config.capDefenseFrontDistMax`), reduzindo perseguição para retaguarda profunda por tracks isolados.
+  - Adicionada penalidade configurável de retaguarda (`Config.capDefenseRearPenalty`) para manter CAP mais próximo da frente útil.
+
+---
 
 ## [2026-03-25]
 
@@ -44,6 +59,9 @@ Todas as mudanças notáveis no sistema da IA Estratégica do Pretense serão do
   - Autosave da missão agora usa intervalo configurável por `Config.persistenceSaveInterval` (padrão 60s).
   - `PersistenceManager` ganhou proteção de intervalo mínimo entre gravações efetivas (`Config.persistenceMinSaveGap`, padrão 30s) para evitar rajadas de escrita em disco.
   - Log `Mission state saved` só é emitido quando a gravação realmente ocorre.
+- **MIST 128 (compat legacy do Pretense)**:
+  - Reintroduzidos metadados `hiddenOnMFD`, `allowLso` e `allowAirboss` no fluxo de DB/dynAdd/getCurrentGroupData/getGroupData da `mist_128-DYNSLOTS-02.lua`.
+  - Mantido suporte a dynamic slots da MIST 128, com compatibilidade dos campos usados historicamente pelo framework.
 
 ---
 
@@ -79,8 +97,9 @@ Todas as mudanças notáveis no sistema da IA Estratégica do Pretense serão do
     - **Compensação de Perda Assimétrica**: O lado em desvantagem recebe multiplicadores de recursos para evitar o colapso total da missão, com limites específicos para RED e Blue.
     - **Variância de Produção Aleatória**: Introdução de fator aleatório cúbico na produção do RED para simular eficácia estratégica variável.
 - **Sistema de Salvamento 2.0**: Migração dos arquivos de save para o subdiretório `Missions/Saves/` e atualização do formato para `2.0.json`.
-- **Comandos Administrativos por Marcadores**:
-- 
+- **Comandos Administrativos por Marcadores (F10)**:
+    - `spawn:[template]`: Permite spawnar veículos terrestres e utilitários via marcador no mapa.
+    - `addres:[valor]`: Comando administrativo para gerenciar recursos das zonas em tempo real.
 - **Logística de Emergência (Strategic AI)**:
     - Notificações de rádio inter-zonas quando uma zona de linha de frente está crítica e sob ameaça imediata.
     - Priorização automática de comboios de suprimento para estas zonas de "emergência".
@@ -159,5 +178,5 @@ Todas as mudanças notáveis no sistema da IA Estratégica do Pretense serão do
 - **Integração Nativa Pretense**: Inclusão de metadata como `hiddenOnMFD` diretamente no banco de dados do MIST, garantindo que objetos criados dinamicamente sejam reconhecidos corretamente pelo sistema de mapa e IADS do Pretense.
 
 ---
-*Última atualização: 2026-03-25*
+*Última atualização: 2026-04-17*
 

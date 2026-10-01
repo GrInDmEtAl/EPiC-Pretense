@@ -2,6 +2,33 @@
 
 Todas as mudanças notáveis no sistema da IA Estratégica do Pretense serão documentadas neste arquivo.
 
+## [2026-10-01]
+
+### Corrigido
+- **Supply Transfer (Cameron, RED e BLUE)**: A lista de zonas amigas agora é preenchida antes do processamento de suprimentos, permitindo que a IA considere o déficit de recursos de construções em andamento ao solicitar transferências. A regra permanece limitada a transferências abstratas entre zonas amigas conectadas; o abastecimento da frente continua usando comboios/helicópteros.
+- **Métricas do GroupMonitor**: Removida da rotina de relatório a referência fora de escopo a `getWorkerBucket`, evitando erro de script nos callbacks dos workers.
+- **FARP dinâmica sem estoque de helicópteros**: Corrigida a leitura da estrutura da missão (`country.helicopter`) usada para localizar slots `Client/Player`; agora o framework configura e confirma o estoque de helicópteros da coalizão da FARP.
+
+### Melhorado
+- **FARP dinâmica nativa no ponto construído**: O `farp-pad` agora solicita ao DCS uma FARP nativa com `dynamicSpawn`, posicionada onde o jogador a construiu; não depende das shells do editor (`farpSpawnShells`). O status F10 `Native dynamic slot requested` indica solicitação, não confirmação de disponibilidade para todos os clientes.
+- **Estoque inicial das FARPs dinâmicas**: Ao criar uma FARP, o warehouse recebe 9.999 unidades por tipo de helicóptero `Client/Player` da coalizão, 9.999 por tipo de armamento listado em `WarehouseManager.weapons` e 100.000 kg de cada tipo de combustível. Os valores são configuráveis por `Config.farpSpawnAircraftStock`, `Config.farpSpawnWeaponStock` e `Config.farpSpawnFuelStock`. São estoques altos, finitos; o DCS não oferece controle Lua confiável para ativar os flags ilimitados do warehouse de uma FARP criada em runtime.
+- **Persistência de estoque FARP**: FARPs restauradas mantêm o inventário salvo; o estoque inicial de armas e combustível só é aplicado na criação ou quando não há inventário salvo.
+- **Métricas de desempenho (opt-in)**: Com `Config.performanceMetricsEnabled = true`, o `GroupMonitor` e `Utils.saveTable` emitem totais agregados de grupos ativos/processados/ignorados, jogadores (somente quantidade), erros, remoções e saves. Incluem duração média/máxima quando `socket.gettime` ou `os.clock` está disponível. O intervalo é controlado por `Config.performanceMetricsInterval` (padrão 300s, mínimo efetivo 60s); não há logs individuais por grupo ou jogador.
+- **Build direcionado ao arquivo da missão**: `build.ps1` gera `pretense_compiled_v2.lua` por padrão (artefato usado para teste), aceita `-OutputFile` para outros nomes e verifica exatamente o destino selecionado com `-Check`. Se a missão estiver configurada para ler `pretense_compiled.lua`, use `-OutputFile pretense_compiled.lua` tanto no build quanto na verificação.
+
+## [2026-09-30]
+
+### Corrigido
+- **GroupMonitor (Comboios de Supply)**: O limite de comboios ativos agora considera o lado que efetivamente envia o suprimento, evitando decisões incorretas quando a zona de destino é neutra.
+- **GroupMonitor (retorno de comboio)**: Um grupo só passa ao estado de retorno depois que o cooldown permite emitir a nova rota, evitando que fique marcado como retornando sem receber a ordem correspondente.
+
+### Melhorado
+- **GroupMonitor (workers)**: As listas ordenadas de grupos aéreos e terrestres agora são armazenadas em cache e reconstruídas apenas quando um grupo é registrado ou removido, evitando varredura e ordenação completas em cada tick.
+- **GroupMonitor (salvage de supply)**: O mapeamento das unidades de cada grupo de suprimento agora é feito uma vez, mantendo tentativas futuras quando o grupo ainda não tem unidades válidas e preservando a limpeza ao despawn.
+- **Build do framework compilado**: `build.ps1` gera o pacote num arquivo temporário, valida a presença das fontes e dos marcadores dos módulos e só substitui o arquivo de destino após sucesso.
+- **Verificação de consistência**: `build.ps1 -Check` compara o arquivo de destino com os módulos de `src/` sem alterá-lo e retorna erro quando está desatualizado.
+- **Codificação do pacote**: O compilado gerado é salvo como UTF-8 sem BOM, formato adequado para o carregamento Lua e estável para comparação no modo de verificação.
+
 ## [2026-04-17]
 
 ### Corrigido
